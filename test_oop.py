@@ -41,6 +41,11 @@ class Path(object):
     def distance(self):
         return sum((segment.distance() for segment in self.segments))
 
+    def stops(self):
+        return [
+            segment.p1 for segment in self._segments
+        ]+[self._segments[-1].p2]
+
 
 class PathList(object):
     __slots__ = ('_paths')
@@ -86,3 +91,15 @@ def test_get_shortest_path():
 
     path_list = PathList([p2, p1])
     assert path_list.get_shortest_path() == p2
+
+
+def test_get_path_stops():
+    s1 = Segment(Point(0, 0), Point(0, 1))
+    p1 = Path([s1])
+    assert p1.stops() == [Point(0, 0), Point(0, 1)]
+
+    s2 = Segment(Point(0, 1), Point(1, 2))
+    s3 = Segment(Point(1, 2), Point(3, 3))
+    p2 = Path([s1, s2, s3])
+    assert p2.stops() == [
+        Point(0, 0), Point(0, 1), Point(1, 2), Point(3, 3)]
