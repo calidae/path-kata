@@ -28,6 +28,19 @@ class Segment(object):
         return hypot(dx, dy)
 
 
+class Path(object):
+    __slots__ = ('_segments')
+
+    def __init__(self, segments):
+        self._segments = segments
+
+    @property
+    def segments(self): return self._segments
+
+    def distance(self):
+        return sum((segment.distance() for segment in self.segments))
+
+
 def test_segment_same_points_error():
     with pytest.raises(ValueError):
         Segment(Point(0, 0), Point(0, 0))
@@ -36,3 +49,13 @@ def test_segment_same_points_error():
 def test_segment_distance():
     assert Segment(Point(0, 0), Point(0, 1)).distance() == 1
     assert Segment(Point(0, 0), Point(1, 1)).distance() == sqrt(2)
+
+
+def test_path_distance():
+    s1 = Segment(Point(0, 0), Point(1, 1))
+    s2 = Segment(Point(1, 1), Point(2, 2))
+    p1 = Path([s1, s2])
+    assert p1.distance() == 2 * sqrt(2)
+
+    p2 = Path([])
+    assert p2.distance() == 0
