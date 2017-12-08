@@ -63,3 +63,6 @@ def test_get_paths_with_stops():
     assert get_paths_with_stops([p1, p2], stop_list) == [p1]
 
     assert get_paths_with_stops([p2], stop_list) == []
+
+    stop_list2 = [Point(0, 0), Point(1, 1)]
+    assert get_paths_with_stops([p2], stop_list2) == []

@@ -36,5 +36,5 @@ def get_path_stops(path):
 def get_paths_with_stops(path_list, stop_list):
     return [
         path for path in path_list
-        if set(stop_list) & set(get_path_stops(path))
+        if set(stop_list) <= set(get_path_stops(path))
     ]

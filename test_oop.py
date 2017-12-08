@@ -75,7 +75,7 @@ class PathList(object):
     def get_paths_with_stops(self, stops):
         return [
             path for path in self.paths
-            if set(stops) & set(path.stops())
+            if set(stops) <= set(path.stops())
         ]
 
     def __repr__(self):
@@ -139,3 +139,6 @@ def test_get_paths_with_stops():
     assert PathList([p1, p2]).get_paths_with_stops(stop_list) == [p1]
 
     assert PathList([p2]).get_paths_with_stops(stop_list) == []
+
+    stop_list2 = [Point(0, 0), Point(1, 1)]
+    assert PathList([p2]).get_paths_with_stops(stop_list2) == []
