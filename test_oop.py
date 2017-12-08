@@ -62,6 +62,12 @@ class PathList(object):
             for path in self._paths
         ), key=itemgetter(1))[0]
 
+    def get_paths_with_stops(self, stops):
+        return [
+            path for path in self._paths
+            if set(stops) & set(path.stops())
+        ]
+
 
 def test_segment_same_points_error():
     with pytest.raises(ValueError):
@@ -103,3 +109,16 @@ def test_get_path_stops():
     p2 = Path([s1, s2, s3])
     assert p2.stops() == [
         Point(0, 0), Point(0, 1), Point(1, 2), Point(3, 3)]
+
+
+def test_get_paths_with_stops():
+    stop_list = [Point(0, 0)]
+    s1 = Segment(Point(0, 0), Point(0, 1))
+    p1 = Path([s1])
+    assert PathList([p1]).get_paths_with_stops(stop_list) == [p1]
+
+    s2 = Segment(Point(1, 1), Point(2, 2))
+    p2 = Path([s2])
+    assert PathList([p1, p2]).get_paths_with_stops(stop_list) == [p1]
+
+    assert PathList([p2]).get_paths_with_stops(stop_list) == []
