@@ -1,6 +1,7 @@
 from math import hypot, sqrt
 from collections import namedtuple
 from operator import itemgetter
+from functools import wraps
 
 import pytest
 
@@ -66,6 +67,13 @@ class PathList(object):
     @property
     def paths(self): return self._paths
 
+    def _none_if_no_paths(f):
+        @wraps(f)
+        def wrapped(inst, *args, **kwargs):
+            return f(inst, *args, **kwargs) if inst.paths else None
+        return wrapped
+
+    @_none_if_no_paths
     def get_shortest_path(self):
         return min((
             (path, path.distance())
@@ -107,6 +115,8 @@ def test_path_distance():
 
 
 def test_get_shortest_path():
+    assert PathList([]).get_shortest_path() is None
+
     s1 = Segment(Point(0, 0), Point(1, 1))
     s2 = Segment(Point(1, 1), Point(2, 2))
     p1 = Path([s1, s2])
