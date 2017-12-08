@@ -86,6 +86,10 @@ class PathList(object):
             if set(stops) <= set(path.stops())
         ]
 
+    @_none_if_no_paths
+    def get_shortest_path_with_stops(self, stops):
+        return PathList(self.get_paths_with_stops(stops)).get_shortest_path()
+
     def __repr__(self):
         return 'PathList({})'.format(', '.join((
             str(path) for path in self.paths
@@ -152,3 +156,19 @@ def test_get_paths_with_stops():
 
     stop_list2 = [Point(0, 0), Point(1, 1)]
     assert PathList([p2]).get_paths_with_stops(stop_list2) == []
+
+
+def test_get_shortest_path_with_stops():
+    assert PathList([]).get_shortest_path_with_stops([]) is None
+
+    s1 = Segment(Point(-4, -2), Point(0, 0))
+    p1 = Path([s1])
+    assert PathList([p1]).get_shortest_path_with_stops([]) == p1
+
+    stop_list = [Point(0, 0), Point(0, 1)]
+    s2 = Segment(Point(0, 0), Point(0, 1))
+    p2 = Path([s1, s2])
+    assert PathList([p1, p2]).get_shortest_path_with_stops(stop_list) == p2
+
+    stop_list2 = [Point(42, 0)]
+    assert PathList([p1, p2]).get_shortest_path_with_stops(stop_list2) is None
