@@ -1,0 +1,7 @@
+{
+    "python.linting.mypyEnabled": true,
+    "python.unitTest.pyTestArgs": [
+        "."
+    ],
+    "python.unitTest.pyTestEnabled": true
+}
