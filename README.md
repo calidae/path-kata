@@ -3,6 +3,13 @@ Path Kata Solutions
 
 Solutions for the Paths functional programming kata: https://tyrcho.github.io/path-kata
 
+How it's organized
+------------------
+There are different implementations with different styles each in one
+python file (with test nomenclature to simplify pytest execution):
+- `test_oop.py` contains an Object Oriented Programming aproach
+- `test_pseudo_fp.py` contains a _pseudo_ Functional Programming aproach
+
 Steps summary
 -------------
 1. Compute the distance of a segment
