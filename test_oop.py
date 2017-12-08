@@ -28,6 +28,9 @@ class Segment(object):
         dy = self.p1.y - self.p2.y
         return hypot(dx, dy)
 
+    def __repr__(self):
+        return 'Segment({},{})'.format(self.p1, self.p2)
+
 
 class Path(object):
     __slots__ = ('_segments')
@@ -45,8 +48,13 @@ class Path(object):
 
     def stops(self):
         return [
-            segment.p1 for segment in self._segments
-        ]+[self._segments[-1].p2]
+            segment.p1 for segment in self.segments
+        ]+[self.segments[-1].p2]
+
+    def __repr__(self):
+        return 'Path({})'.format(', '.join((
+            str(segment) for segment in self.segments
+        )))
 
 
 class PathList(object):
@@ -61,14 +69,19 @@ class PathList(object):
     def get_shortest_path(self):
         return min((
             (path, path.distance())
-            for path in self._paths
+            for path in self.paths
         ), key=itemgetter(1))[0]
 
     def get_paths_with_stops(self, stops):
         return [
-            path for path in self._paths
+            path for path in self.paths
             if set(stops) & set(path.stops())
         ]
+
+    def __repr__(self):
+        return 'PathList({})'.format(', '.join((
+            str(path) for path in self.paths
+        )))
 
 
 def test_segment_same_points_error():
