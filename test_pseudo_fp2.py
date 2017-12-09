@@ -1,5 +1,9 @@
 from math import hypot, sqrt
-from typing import NamedTuple, List
+from typing import NamedTuple, List, Optional
+from operator import itemgetter
+
+from toolz.itertoolz import first
+from toolz.functoolz import reduce
 
 
 class Point(NamedTuple):
@@ -13,6 +17,7 @@ class Segment(NamedTuple):
 
 
 Path = List[Segment]
+PathList = List[Path]
 
 
 def distance(segment: Segment) -> float:
@@ -25,6 +30,13 @@ def total_distance(path: Path) -> float:
     return sum((distance(segment) for segment in path))
 
 
+def shortest_path(path_list: PathList) -> Optional[Path]:
+    return reduce(
+        lambda a, n: n if total_distance(a) > total_distance(n) else a,
+        path_list
+    ) if path_list else None
+
+
 def test_segment_distance() -> None:
     assert distance(Segment(Point(0, 0), Point(0, 1))) == 1
     assert distance(Segment(Point(0, 0), Point(1, 1))) == sqrt(2)
@@ -34,3 +46,15 @@ def test_path_distance() -> None:
     s1 = Segment(Point(0, 0), Point(1, 1))
     s2 = Segment(Point(1, 1), Point(2, 2))
     assert total_distance([s1, s2]) == 2 * sqrt(2)
+
+
+def test_shortest_path() -> None:
+    assert shortest_path([]) is None
+
+    s1 = Segment(Point(0, 0), Point(1, 1))
+    s2 = Segment(Point(1, 1), Point(2, 2))
+    p1 = [s1, s2]
+    p2 = [s1]
+
+    path_list = [p2, p1]
+    assert shortest_path(path_list) == p2
