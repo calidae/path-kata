@@ -2,7 +2,7 @@ from math import hypot, sqrt
 from typing import NamedTuple, List, Optional
 from operator import itemgetter
 
-from toolz.itertoolz import first
+from toolz.itertoolz import first, last
 
 
 class Point(NamedTuple):
@@ -36,6 +36,10 @@ def shortest_path(path_list: PathList) -> Optional[Path]:
     ), key=itemgetter(1), default=[None]))
 
 
+def stops(path: Path) -> List[Point]:
+    return [segment.p1 for segment in path]+[last(path).p2]
+
+
 def test_segment_distance() -> None:
     assert distance(Segment(Point(0, 0), Point(0, 1))) == 1
     assert distance(Segment(Point(0, 0), Point(1, 1))) == sqrt(2)
@@ -57,3 +61,15 @@ def test_shortest_path() -> None:
 
     path_list = [p2, p1]
     assert shortest_path(path_list) == p2
+
+
+def test_get_path_stops() -> None:
+    s1 = Segment(Point(0, 0), Point(0, 1))
+    p1 = [s1]
+    assert stops(p1) == [Point(0, 0), Point(0, 1)]
+
+    s2 = Segment(Point(0, 1), Point(1, 2))
+    s3 = Segment(Point(1, 2), Point(3, 3))
+    p2 = [s1, s2, s3]
+    assert stops(p2) == [
+        Point(0, 0), Point(0, 1), Point(1, 2), Point(3, 3)]
