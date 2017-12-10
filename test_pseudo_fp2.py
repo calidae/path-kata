@@ -40,6 +40,13 @@ def stops(path: Path) -> List[Point]:
     return [segment.p1 for segment in path]+[last(path).p2]
 
 
+def paths_with_stops(path_list: PathList, stops_: List[Point]) -> PathList:
+    return [
+        path for path in path_list
+        if set(stops_) <= set(stops(path))
+    ]
+
+
 def test_segment_distance() -> None:
     assert distance(Segment(Point(0, 0), Point(0, 1))) == 1
     assert distance(Segment(Point(0, 0), Point(1, 1))) == sqrt(2)
@@ -73,3 +80,19 @@ def test_get_path_stops() -> None:
     p2 = [s1, s2, s3]
     assert stops(p2) == [
         Point(0, 0), Point(0, 1), Point(1, 2), Point(3, 3)]
+
+
+def test_get_paths_with_stops() -> None:
+    stop_list = [Point(0, 0)]
+    s1 = Segment(Point(0, 0), Point(0, 1))
+    p1 = [s1]
+    assert paths_with_stops([p1], stop_list) == [p1]
+
+    s2 = Segment(Point(1, 1), Point(2, 2))
+    p2 = [s2]
+    assert paths_with_stops([p1, p2], stop_list) == [p1]
+
+    assert paths_with_stops([p2], stop_list) == []
+
+    stop_list2 = [Point(0, 0), Point(1, 1)]
+    assert paths_with_stops([p2], stop_list2) == []
