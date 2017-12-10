@@ -3,7 +3,6 @@ from typing import NamedTuple, List, Optional
 from operator import itemgetter
 
 from toolz.itertoolz import first
-from toolz.functoolz import reduce
 
 
 class Point(NamedTuple):
@@ -31,10 +30,10 @@ def total_distance(path: Path) -> float:
 
 
 def shortest_path(path_list: PathList) -> Optional[Path]:
-    return reduce(
-        lambda a, n: n if total_distance(a) > total_distance(n) else a,
-        path_list
-    ) if path_list else None
+    return first(min((
+        (path, total_distance(path))
+        for path in path_list
+    ), key=itemgetter(1), default=[None]))
 
 
 def test_segment_distance() -> None:
