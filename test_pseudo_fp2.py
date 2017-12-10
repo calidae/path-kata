@@ -3,6 +3,7 @@ from typing import NamedTuple, List, Optional
 from operator import itemgetter
 
 from toolz.itertoolz import first, last
+from toolz.functoolz import compose
 
 
 class Point(NamedTuple):
@@ -45,6 +46,9 @@ def paths_with_stops(path_list: PathList, stops_: List[Point]) -> PathList:
         path for path in path_list
         if set(stops_) <= set(stops(path))
     ]
+
+
+shortest_path_with_stops = compose(shortest_path, paths_with_stops)
 
 
 def test_segment_distance() -> None:
@@ -96,3 +100,19 @@ def test_get_paths_with_stops() -> None:
 
     stop_list2 = [Point(0, 0), Point(1, 1)]
     assert paths_with_stops([p2], stop_list2) == []
+
+
+def test_get_shortest_path_with_stops() -> None:
+    assert shortest_path_with_stops([], []) is None
+
+    s1 = Segment(Point(-4, -2), Point(0, 0))
+    p1 = [s1]
+    assert shortest_path_with_stops([p1], []) == p1
+
+    stop_list = [Point(0, 0), Point(0, 1)]
+    s2 = Segment(Point(0, 0), Point(0, 1))
+    p2 = [s1, s2]
+    assert shortest_path_with_stops([p1, p2], stop_list) == p2
+
+    stop_list2 = [Point(42, 0)]
+    assert shortest_path_with_stops([p1, p2], stop_list2) is None
