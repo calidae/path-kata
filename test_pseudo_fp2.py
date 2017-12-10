@@ -1,5 +1,5 @@
 from math import hypot, sqrt
-from typing import NamedTuple, List, Optional
+from typing import NamedTuple, List, Optional, Callable
 from operator import itemgetter
 
 from toolz.itertoolz import first, last
@@ -48,7 +48,9 @@ def paths_with_stops(path_list: PathList, stops_: List[Point]) -> PathList:
     ]
 
 
-shortest_path_with_stops = compose(shortest_path, paths_with_stops)
+shortest_path_with_stops: Callable[
+    [PathList, List[Point]], Optional[Path]
+] = compose(shortest_path, paths_with_stops)
 
 
 def test_segment_distance() -> None:
